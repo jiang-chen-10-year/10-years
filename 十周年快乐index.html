@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>十周年 · 终极贺卡</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(145deg, #f7efe8 0%, #f0e2d8 100%);
+            font-family: '楷体', 'KaiTi', 'STKaiti', serif;
+            padding: 12px;
+            overflow: hidden;
+            user-select: none;
+        }
+        .card {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(255, 248, 244, 0.92);
+            border-radius: 48px 16px 48px 16px;
+            box-shadow: 0 20px 40px rgba(140, 100, 80, 0.15);
+            padding: 28px 20px 24px;
+            border: 1px solid rgba(235, 215, 205, 0.5);
+            position: relative;
+            min-height: 440px;
+            cursor: pointer;
+        }
+        .dots { display: flex; justify-content: center; gap: 14px; margin-bottom: 18px; pointer-events: none; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: #dcc8be; transition: 0.3s; }
+        .dot.active { background: #b48a7a; transform: scale(1.3); }
+        .page { display: none; flex-direction: column; align-items: center; text-align: center; min-height: 280px; justify-content: center; animation: fadeUp 0.4s ease; position: relative; padding: 8px 0; pointer-events: none; }
+        .page.active { display: flex; pointer-events: auto; }
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(18px); } 100% { opacity: 1; transform: translateY(0); } }
+        .deco { position: absolute; font-size: 1.5rem; opacity: 0.5; user-select: none; pointer-events: none; }
+        .page-1 .deco1 { top: 0; left: 2%; transform: rotate(-15deg); }
+        .page-1 .deco2 { top: 8%; right: 4%; transform: rotate(20deg); }
+        .page-1 .deco3 { bottom: 2%; left: 6%; transform: rotate(5deg); }
+        .page-1 .deco4 { bottom: 12%; right: 4%; transform: rotate(-10deg); }
+        .page-2 .deco1 { top: 0; left: 4%; transform: rotate(-8deg); }
+        .page-2 .deco2 { top: 4%; right: 2%; transform: rotate(12deg); }
+        .page-2 .deco3 { bottom: 2%; left: 2%; transform: rotate(-5deg); }
+        .page-2 .deco4 { bottom: 8%; right: 4%; transform: rotate(20deg); }
+        .page-3 .deco1 { top: 0; left: 4%; transform: rotate(-10deg); }
+        .page-3 .deco2 { top: 6%; right: 2%; transform: rotate(15deg); }
+        .page-3 .deco3 { bottom: 2%; left: 2%; transform: rotate(8deg); }
+        .page-3 .deco4 { bottom: 10%; right: 4%; transform: rotate(-12deg); }
+        .page-4 .deco1 { top: 0; left: 2%; transform: rotate(-5deg); }
+        .page-4 .deco2 { top: 4%; right: 2%; transform: rotate(10deg); }
+        .page-4 .deco3 { bottom: 0; left: 4%; transform: rotate(-8deg); }
+        .page-4 .deco4 { bottom: 6%; right: 2%; transform: rotate(12deg); }
+        .glow-text {
+            font-family: '楷体', 'KaiTi', 'STKaiti', serif;
+            font-size: 2.4rem;
+            background: linear-gradient(135deg, #d4a373, #b5835a, #8c5e3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(181, 131, 90, 0.3);
+            animation: breathGlow 3s ease-in-out infinite;
+            letter-spacing: 3px;
+        }
+        @keyframes breathGlow { 0%, 100% { text-shadow: 0 0 20px rgba(181, 131, 90, 0.3), 0 0 40px rgba(181, 131, 90, 0.1); } 50% { text-shadow: 0 0 30px rgba(181, 131, 90, 0.6), 0 0 60px rgba(181, 131, 90, 0.2); } }
+        .sub-glow { font-size: 1.1rem; color: #9b7a6b; letter-spacing: 4px; margin-top: 10px; animation: shimmer 2s infinite; }
+        @keyframes shimmer { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; text-shadow: 0 0 6px rgba(155, 122, 107, 0.3); } }
+        .num-soft { font-size: 1.4rem; font-weight: 700; color: #c77d4a; }
+        .neon { font-size: 2rem; font-weight: 700; color: #b07d6e; animation: neonFlicker 2.5s infinite alternate; text-shadow: 0 0 8px rgba(176, 125, 110, 0.3); }
+        @keyframes neonFlicker { 0% { color: #b07d6e; text-shadow: 0 0 8px rgba(176,125,110,0.3), 0 0 20px rgba(176,125,110,0.1); } 30% { color: #d4a373; text-shadow: 0 0 15px rgba(212,163,115,0.6), 0 0 40px rgba(212,163,115,0.2); } 60% { color: #e8923a; text-shadow: 0 0 20px rgba(232,146,58,0.8), 0 0 60px rgba(232,146,58,0.3); } 100% { color: #b07d6e; text-shadow: 0 0 8px rgba(176,125,110,0.3), 0 0 20px rgba(176,125,110,0.1); } }
+        .rainbow-title { font-size: 1.3rem; font-weight: 700; background: linear-gradient(90deg, #f6b26b, #e8923a, #c77d4a, #b07d6e, #c77d4a, #e8923a, #f6b26b); background-size: 300% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbowMove 4s linear infinite; }
+        @keyframes rainbowMove { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+        .page p { font-size: 1.1rem; line-height: 1.9; color: #4f3a32; max-width: 92%; font-family: '楷体', 'KaiTi', 'STKaiti', serif; }
+        .name-highlight { font-style: italic; color: #2a6fdb; font-size: 1.3rem; }
+        .gift-blind-box { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .gift-btn-blind {
+            width: 100%; padding: 18px 14px; border: none; border-radius: 50px; font-size: 1.05rem; font-weight: 700;
+            background: #ffffff; border: 2px solid #e6d2c8; cursor: pointer; transition: 0.3s; text-align: center;
+            margin-bottom: 14px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02); display: flex; align-items: center;
+            justify-content: center; gap: 12px; font-family: '楷体', 'KaiTi', 'STKaiti', serif; pointer-events: auto;
+            min-height: 60px; touch-action: manipulation;
+        }
+        .gift-btn-blind:active { transform: scale(0.96); }
+        .gift-btn-blind .icon { font-size: 1.6rem; }
+        .gift-btn-blind.g1 { background: #fef3ed; border-color: #eacfc4; }
+        .gift-btn-blind.g2 { background: #f0edf7; border-color: #d5cce0; }
+        .gift-btn-blind.g3 { background: #edf5f0; border-color: #c5d6cd; }
+        .gift-detail { display: none; flex-direction: column; align-items: center; width: 100%; padding: 18px 14px; background: rgba(255, 248, 244, 0.8); border-radius: 30px; border: 2px dashed #dcc8be; margin-top: 10px; animation: fadeUp 0.3s ease; }
+        .gift-detail.show { display: flex; }
+        .gift-detail .detail-icon { font-size: 2.8rem; margin-bottom: 4px; }
+        .gift-detail .detail-title { font-size: 1.2rem; font-weight: 700; color: #4f3a32; }
+        .gift-detail .detail-desc { font-size: 0.95rem; line-height: 1.7; color: #5a3f3a; margin: 8px 0; text-align: center; }
+        .gift-detail .detail-note { font-size: 0.7rem; color: #a07162; margin-top: 2px; opacity: 0.8; letter-spacing: 0.5px; }
+        .gift-detail .detail-extra { font-size: 0.75rem; color: #b5835a; margin-top: 4px; font-weight: 500; }
+        .btn-row { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; justify-content: center; }
+        .btn-confirm, .btn-reselect { padding: 12px 28px; border: none; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: '楷体', 'KaiTi', 'STKaiti', serif; pointer-events: auto; touch-action: manipulation; min-height: 50px; }
+        .btn-confirm { background: #b48a7a; color: #fff; box-shadow: 0 6px 16px rgba(180, 138, 122, 0.3); }
+        .btn-confirm:active { transform: scale(0.95); }
+        .btn-reselect { background: #e8d5ce; color: #4f3a32; }
+        .btn-reselect:active { transform: scale(0.95); }
+        .final-page {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #0a0a0a; border-radius: 0; flex-direction: column; justify-content: center;
+            align-items: center; z-index: 9999; overflow: hidden; padding: 20px; pointer-events: auto;
+        }
+        .final-page.active { display: flex; animation: fadeIn 0.8s ease; }
+        @keyframes fadeIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+        .final-title {
+            font-size: 3.6rem; font-weight: 900; font-family: '楷体', 'KaiTi', 'STKaiti', serif;
+            background: linear-gradient(90deg, #f6b26b, #e8923a, #d4a373, #b5835a, #c77d4a, #f6b26b);
+            background-size: 400% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: spinRainbow 5s linear infinite, rotate3d 8s linear infinite;
+            text-shadow: 0 0 40px rgba(232, 146, 58, 0.8), 0 0 80px rgba(232, 146, 58, 0.4);
+            letter-spacing: 4px; text-align: center; line-height: 1.2; pointer-events: none;
+        }
+        @keyframes spinRainbow { 0% { background-position: 0% 50%; } 100% { background-position: 400% 50%; } }
+        @keyframes rotate3d { 0% { transform: rotateY(0deg) rotateX(0deg); } 100% { transform: rotateY(360deg) rotateX(10deg); } }
+        #fireworksCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: auto; cursor: pointer; z-index: 101; border-radius: 0; }
+        #finalThank { position: absolute; bottom: 24px; left: 0; width: 100%; text-align: center; color: rgba(255,255,255,0.9); font-size: 0.85rem; opacity: 0; transition: opacity 0.5s; pointer-events: none; z-index: 102; font-family: '楷体', 'KaiTi', 'STKaiti', serif; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        #finalThank.show { opacity: 1; }
+        .nav { display: none; }
+        @media (max-width: 420px) {
+            .card { padding: 20px 14px 18px; min-height: 400px; border-radius: 32px 12px 32px 12px; }
+            .glow-text { font-size: 2.0rem; }
+            .sub-glow { font-size: 1.0rem; letter-spacing: 3px; }
+            .neon { font-size: 1.8rem; }
+            .num-soft { font-size: 1.2rem; }
+            .page p { font-size: 1.0rem; line-height: 1.8; }
+            .name-highlight { font-size: 1.1rem; }
+            .rainbow-title { font-size: 1.1rem; }
+            .gift-btn-blind { font-size: 0.95rem; padding: 16px 12px; min-height: 52px; gap: 10px; }
+            .gift-btn-blind .icon { font-size: 1.4rem; }
+            .btn-confirm, .btn-reselect { font-size: 0.9rem; padding: 10px 22px; min-height: 44px; }
+            .gift-detail { padding: 14px 10px; }
+            .gift-detail .detail-title { font-size: 1.1rem; }
+            .gift-detail .detail-desc { font-size: 0.85rem; }
+            .final-title { font-size: 2.8rem; letter-spacing: 3px; }
+            #finalThank { font-size: 0.75rem; bottom: 18px; }
+            .deco { font-size: 1.2rem; }
+            .dots { gap: 10px; margin-bottom: 14px; }
+            .dot { width: 10px; height: 10px; }
+        }
+        @media (max-width: 360px) {
+            .card { padding: 16px 10px 14px; min-height: 360px; }
+            .glow-text { font-size: 1.7rem; }
+            .neon { font-size: 1.5rem; }
+            .page p { font-size: 0.9rem; }
+            .final-title { font-size: 2.2rem; }
+            .gift-btn-blind { font-size: 0.85rem; padding: 14px 10px; min-height: 46px; }
+            .btn-confirm, .btn-reselect { font-size: 0.8rem; padding: 8px 18px; min-height: 38px; }
+            #finalThank { font-size: 0.65rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card" id="cardContainer">
+        <div class="dots" id="dots">
+            <span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+        <div class="page page-1 active" data-index="0">
+            <span class="deco deco1">✦</span><span class="deco deco2">✧</span><span class="deco deco3">✦</span><span class="deco deco4">✧</span>
+            <div class="glow-text">今天是2026年9月1日</div>
+            <div class="sub-glow">我们相遇的第十年</div>
+        </div>
+        <div class="page page-2" data-index="1">
+            <span class="deco deco1">🌸</span><span class="deco deco2">🌼</span><span class="deco deco3">🌸</span><span class="deco deco4">🌼</span>
+            <p>原以为此生缘分已尽，<br>没想到从去年十月至今，<br><span class="num-soft">322天</span>，我们每天都在联系。</p>
+        </div>
+        <div class="page page-3" data-index="2">
+            <span class="deco deco1">❤️</span><span class="deco deco2">💛</span><span class="deco deco3">❤️</span><span class="deco deco4">💛</span>
+            <p>很高兴遇见你——<span class="name-highlight">蒋晨同学</span>，<br>也很荣幸能陪你走过这一段岁月。<br><br>祝我们 <span class="neon">十周年快乐</span>！<br>愿你天天健康、开心、如意、顺遂。<br><br>下一个十年，也请多多指教。</p>
+        </div>
+        <div class="page page-4" data-index="3">
+            <span class="deco deco1">🎁</span><span class="deco deco2">🎀</span><span class="deco deco3">🎁</span><span class="deco deco4">🎀</span>
+            <div class="rainbow-title" style="margin-bottom:16px;">🎁 铛铛铛，选一个礼物吧！</div>
+            <div class="gift-blind-box">
+                <button class="gift-btn-blind g1" onclick="showGiftDetail(1)"><span class="icon">📦</span> 私人订制小礼物</button>
+                <button class="gift-btn-blind g2" onclick="showGiftDetail(2)"><span class="icon">🌟</span> 愿望星</button>
+                <button class="gift-btn-blind g3" onclick="showGiftDetail(3)"><span class="icon">🏦</span> 暂存</button>
+                <div class="gift-detail" id="giftDetail">
+                    <div class="detail-icon" id="detailIcon">🎁</div>
+                    <div class="detail-title" id="detailTitle"></div>
+                    <div class="detail-desc" id="detailDesc"></div>
+                    <div class="detail-note" id="detailNote"></div>
+                    <div class="detail-extra" id="detailExtra"></div>
+                    <div class="btn-row">
+                        <button class="btn-reselect" onclick="resetGiftSelection()">🔁 重新选择</button>
+                        <button class="btn-confirm" onclick="goToFinal()">✅ 确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="final-page" id="finalPage">
+            <div class="final-title">十周年快乐</div>
+            <canvas id="fireworksCanvas"></canvas>
+            <div id="finalThank">（谢谢你能看到最后）</div>
+        </div>
+        <div class="nav" id="navBar">
+            <button class="nav-btn" id="prevBtn" disabled>上一页</button>
+            <button class="nav-btn" id="nextBtn">下一页</button>
+        </div>
+    </div>
+    <audio id="bgm" src="起风了.mp3" loop preload="auto"></audio>
+    <script>
+        let currentIdx = 0;
+        const pages = document.querySelectorAll('.page');
+        const dots = document.querySelectorAll('.dot');
+        const finalPage = document.getElementById('finalPage');
+        const card = document.getElementById('cardContainer');
+        const bgm = document.getElementById('bgm');
+        let bgmPlayed = false;
+        let voiceTimeout = null;
+
+        function changePage(delta) {
+            if (finalPage.classList.contains('active')) return;
+            const newIdx = currentIdx + delta;
+            if (newIdx < 0 || newIdx >= pages.length) return;
+            currentIdx = newIdx;
+            pages.forEach((p, i) => p.classList.toggle('active', i === currentIdx));
+            dots.forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+            if (voiceTimeout) { clearTimeout(voiceTimeout); voiceTimeout = null; }
+            if (currentIdx === 1) { new Audio('timi.mp3').play().catch(() => {}); }
+            if (currentIdx === 2) { voiceTimeout = setTimeout(() => { new Audio('duojiao.mp3').play().catch(() => {}); }, 2000); }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        card.addEventListener('click', function(e) {
+            if (!bgmPlayed) { bgm.play().catch(() => {}); bgmPlayed = true; }
+            if (finalPage.classList.contains('active')) return;
+            if (e.target.closest('button')) return;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const mid = rect.width / 2;
+            if (x < mid) changePage(-1);
+            else changePage(1);
+        });
+
+        const giftData = {
+            1: { icon: '📦', title: '私人订制小礼物', desc: '一份有纪念意义的小礼物，不怎么值钱，只是想表示十周年快乐。', note: '', extra: '注：该礼物可以和其他礼物一起选哟。' },
+            2: { icon: '🌟', title: '愿望星', desc: '实现你任何一个愿望 ⭐️ 或者任意挑选一个礼物 🎁。', note: '注：我能力范围内的任何条件任何愿望哦', extra: '' },
+            3: { icon: '🏦', title: '暂存', desc: '存进未来银行，在未来的任意一天你可以取出它，时限1~99年。', note: '我就知道你肯定会选这个', extra: '' }
+        };
+
+        function showGiftDetail(id) {
+            const g = giftData[id];
+            document.querySelectorAll('.gift-btn-blind').forEach(btn => btn.style.display = 'none');
+            const detail = document.getElementById('giftDetail');
+            detail.classList.add('show');
+            document.getElementById('detailIcon').textContent = g.icon;
+            document.getElementById('detailTitle').textContent = g.title;
+            document.getElementById('detailDesc').textContent = g.desc;
+            document.getElementById('detailNote').textContent = g.note;
+            document.getElementById('detailExtra').textContent = g.extra;
+            detail.dataset.giftId = id;
+        }
+
+        function resetGiftSelection() {
+            document.querySelectorAll('.gift-btn-blind').forEach(btn => btn.style.display = 'flex');
+            document.getElementById('giftDetail').classList.remove('show');
+            document.getElementById('giftDetail').dataset.giftId = '';
+        }
+
+        function goToFinal() {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('dots').style.display = 'none';
+            finalPage.classList.add('active');
+            initFireworks();
+            if (voiceTimeout) { clearTimeout(voiceTimeout); voiceTimeout = null; }
+            setTimeout(() => { startFireworksShow(); }, 300);
+        }
+
+        let intervalId = null, persistentIntervalId = null, thankTimer = null;
+        const thankEl = document.getElementById('finalThank');
+
+        function showThank() {
+            if (thankTimer) { clearTimeout(thankTimer); thankTimer = null; }
+            thankEl.classList.add('show');
+            thankTimer = setTimeout(() => { thankEl.classList.remove('show'); thankTimer = null; }, 3000);
+        }
+
+        function hideThank() {
+            if (thankTimer) { clearTimeout(thankTimer); thankTimer = null; }
+            thankEl.classList.remove('show');
+        }
+
+        function startFireworksShow() {
+            for (let i = 0; i < 5; i++) {
+                const x = Math.random() * canvas.width, y = Math.random() * canvas.height;
+                createExplosion(x, y);
+            }
+            showThank();
+            let count = 0;
+            if (intervalId) clearInterval(intervalId);
+            intervalId = setInterval(() => {
+                if (count >= 10 || !finalPage.classList.contains('active')) {
+                    clearInterval(intervalId); intervalId = null;
+                    startPersistentFireworks(); return;
+                }
+                const x = Math.random() * canvas.width, y = Math.random() * canvas.height;
+                createExplosion(x, y);
+                count++;
+            }, 400);
+            setTimeout(() => {
+                if (intervalId) { clearInterval(intervalId); intervalId = null; startPersistentFireworks(); }
+            }, 5000);
+        }
+
+        function startPersistentFireworks() {
+            if (persistentIntervalId) clearInterval(persistentIntervalId);
+            persistentIntervalId = setInterval(() => {
+                if (!finalPage.classList.contains('active')) { clearInterval(persistentIntervalId); persistentIntervalId = null; return; }
+                hideThank();
+                const x = Math.random() * canvas.width, y = Math.random() * canvas.height;
+                createExplosion(x, y);
+            }, 2000);
+        }
+
+        let canvas, ctx, particles = [], animId = null, fireworksActive = false;
+
+        function initFireworks() {
+            canvas = document.getElementById('fireworksCanvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            canvas.addEventListener('click', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left, y = e.clientY - rect.top;
+                createExplosion(x, y);
+                hideThank();
+            });
+            if (!fireworksActive) { fireworksActive = true; animate(); }
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.style.width = '100vw';
+            canvas.style.height = '100vh';
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x; this.y = y; this.color = color;
+                const angle = Math.random() * 2 * Math.PI;
+                const speed = Math.random() * 6 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.02 + 0.01;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.gravity = 0.05;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                this.vy += this.gravity;
+                this.vx *= 0.99; this.vy *= 0.99;
+                this.alpha -= this.decay;
+                this.size *= 0.99;
+            }
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(this.alpha, 0);
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 12;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function createExplosion(x, y) {
+            const colors = ['#FF1744','#FF9100','#FFEA00','#00E676','#00B0FF','#D500F9','#FF4081','#18FFFF','#FFD740','#E040FB'];
+            const count = 70 + Math.floor(Math.random() * 50);
+            for (let i = 0; i < count; i++) {
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw(ctx);
+                if (p.alpha <= 0 || p.size < 0.2) particles.splice(i, 1);
+            }
+            animId = requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('beforeunload', function() {
+            if (animId) cancelAnimationFrame(animId);
+            if (intervalId) clearInterval(intervalId);
+            if (persistentIntervalId) clearInterval(persistentIntervalId);
+            if (thankTimer) clearTimeout(thankTimer);
+        });
+
+        changePage(0);
+        console.log('🎉 十周年贺卡已加载！');
+    </script>
+</body>
+</html>
